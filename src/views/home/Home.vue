@@ -6,20 +6,23 @@
     <home-swiper :banner="banner"/>
     <recommend-view :recommends="recommend"/>
     <feature-view/>
+    <tab-control :title="['流行', '新款', '精选']"/>
   </div>
 </template>
 
 <script>
 import NavBar from "@/components/common/navbar/NavBar";
-import {getHomeMultiData} from "@/network/home";
+import {getHomeMultiData, getHomeGoods} from "@/network/home";
 import HomeSwiper from "@/views/home/chridencomps/HomeSwiper";
 import RecommendView from "@/views/home/chridencomps/RecommendView";
 import FeatureView from "@/views/home/chridencomps/FeatureView";
+import TabControl from "@/components/content/tabControl/TabControl";
 
 
 export default {
   name: "Home",
   components: {
+    TabControl,
     FeatureView,
     RecommendView,
     NavBar,
@@ -29,8 +32,11 @@ export default {
     return {
       banner: null,
       recommend: null,
-      dKeyword: null,
-      keywords: null
+      goods: {
+        'pop': {page: 0, list: []},
+        'new': {page: 0, list: []},
+        'sell': {page: 0, list: []}
+      }
     }
   },
   created() {
@@ -40,6 +46,19 @@ export default {
       this.dKeyword = res.data.dKeyword.list
       this.keywords = res.data.keywords.list
     })
+    this.getHomeGoods('pop')
+    this.getHomeGoods('new')
+    this.getHomeGoods('sell')
+  },
+  methods: {
+    getHomeGoods(type) {
+      const page = this.goods[type].page + 1
+      getHomeGoods(type, page).then(res => {
+        this.goods[type].list.push(...res.data.list)
+        this.goods[type].page += 1
+      })
+    }
+
   }
 }
 </script>
