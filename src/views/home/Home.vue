@@ -6,7 +6,8 @@
     <home-swiper :banner="banner"/>
     <recommend-view :recommends="recommend"/>
     <feature-view/>
-    <tab-control :title="['流行', '新款', '精选']"/>
+    <tab-control :title="['流行', '新款', '精选']" @tabControlClick="tabControlClick"/>
+    <card :cardData="showGoods"/>
   </div>
 </template>
 
@@ -17,11 +18,13 @@ import HomeSwiper from "@/views/home/chridencomps/HomeSwiper";
 import RecommendView from "@/views/home/chridencomps/RecommendView";
 import FeatureView from "@/views/home/chridencomps/FeatureView";
 import TabControl from "@/components/content/tabControl/TabControl";
+import Card from "@/components/content/card/Card";
 
 
 export default {
   name: "Home",
   components: {
+    Card,
     TabControl,
     FeatureView,
     RecommendView,
@@ -36,7 +39,13 @@ export default {
         'pop': {page: 0, list: []},
         'new': {page: 0, list: []},
         'sell': {page: 0, list: []}
-      }
+      },
+      currentType: 'pop'
+    }
+  },
+  computed:{
+    showGoods(){
+      return this.goods[this.currentType].list;
     }
   },
   created() {
@@ -51,6 +60,19 @@ export default {
     this.getHomeGoods('sell')
   },
   methods: {
+    tabControlClick(index) {
+      switch (index) {
+        case 0:
+          this.currentType = 'pop'
+          break
+        case 1:
+          this.currentType = 'new'
+          break
+        case 2:
+          this.currentType = 'sell'
+          break
+      }
+    },
     getHomeGoods(type) {
       const page = this.goods[type].page + 1
       getHomeGoods(type, page).then(res => {
@@ -58,7 +80,6 @@ export default {
         this.goods[type].page += 1
       })
     }
-
   }
 }
 </script>

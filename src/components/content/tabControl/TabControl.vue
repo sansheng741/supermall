@@ -15,7 +15,7 @@ export default {
   name: "TabControl",
   data() {
     return {
-      currentIndex: 1
+      currentIndex: 0
     }
   },
   props: {
@@ -29,6 +29,7 @@ export default {
   methods: {
     itemClick(index) {
       this.currentIndex = index;
+      this.$emit("tabControlClick", index)
     }
   }
 }
@@ -45,6 +46,7 @@ export default {
   position: sticky;
   top: 44px;
   background-color: #fff;
+  z-index: 9;
 }
 
 .table-control-item {
@@ -56,7 +58,7 @@ export default {
   padding: 5px;
 }
 
-.active span{
+.active span {
   color: var(--color-high-text);
   border-bottom: 2px solid var(--color-tint);
 }
